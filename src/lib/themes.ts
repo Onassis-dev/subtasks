@@ -9,7 +9,10 @@ type ColorStore = {
 };
 
 export const useColorStore = create<ColorStore>((set, get) => ({
-  color: (localStorage.getItem("color") as Color) || "primary",
+  color:
+    typeof window !== "undefined"
+      ? (localStorage.getItem("color") as Color) || "primary"
+      : "primary",
   setColor: (color) => {
     localStorage.setItem("color", color);
     document.documentElement.classList.remove("blue", "green", "purple", "red");
