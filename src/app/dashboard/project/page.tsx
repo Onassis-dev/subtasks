@@ -8,7 +8,7 @@ import { db, Task } from "@/lib/storage";
 import { useLiveQuery } from "dexie-react-hooks";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { DndContext, useSensors } from "@dnd-kit/core";
 import { MouseSensor, TouchSensor, useSensor } from "@dnd-kit/core";
 import { useProjectTasks } from "@/lib/store";
@@ -27,7 +27,7 @@ function organizeTasksRecursively(
   }));
 }
 
-export default function ProjectPage() {
+function ProjectPageContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -133,5 +133,17 @@ export default function ProjectPage() {
         task={selectedTask!}
       />
     </div>
+  );
+}
+
+export default function ProjectPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-4 max-w-3xl w-full mx-auto pb-24">Loading...</div>
+      }
+    >
+      <ProjectPageContent />
+    </Suspense>
   );
 }
