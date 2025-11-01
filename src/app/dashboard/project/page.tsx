@@ -76,7 +76,7 @@ export default function ProjectPage() {
   if (!project) return null;
 
   return (
-    <div className="p-4 max-w-4xl w-full mx-auto pb-24">
+    <div className="p-4 max-w-3xl w-full mx-auto pb-24">
       <h1 className="text-2xl font-bold mt-12 mb-8">{project.title}</h1>
 
       <DndContext

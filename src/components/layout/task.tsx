@@ -186,6 +186,9 @@ function TaskCheckbox({
   function handleComplete() {
     if (checkIfChildrensCompleted(task.id)) {
       setDone(true);
+      const pop = new Audio("/sounds/pop1.mp3");
+      pop.currentTime = 0;
+      pop.play();
       if (level === 0) randomCelebration();
       setTimeout(() => {
         completeTask(task.id);

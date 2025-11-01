@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { CircleIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 
 interface props {
   project: Task;
@@ -29,8 +29,9 @@ export function Project({
       <div className="px-2 hover:bg-sidebar-accent flex items-center justify-between rounded-md text-sm h-8 group/project">
         <Link
           href={`/dashboard/project?id=${project.id}`}
-          className="w-full h-full flex items-center"
+          className="w-full h-full flex items-center gap-2"
         >
+          <CircleIcon />
           {project.title}
         </Link>
 
@@ -40,7 +41,7 @@ export function Project({
               variant="ghost"
               className="size-6 opacity-0 group-hover/project:opacity-100 data-[state=open]:opacity-100"
             >
-              <DotsVerticalIcon />
+              <DotsHorizontalIcon />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="right" align="start">

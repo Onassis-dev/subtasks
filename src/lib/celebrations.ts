@@ -55,7 +55,7 @@ export function ConfettiSideCannons() {
 
 export function randomCelebration() {
   const number = Math.random();
-  if (true) {
+  if (false) {
     ConfettiFireworks();
   } else {
     ConfettiSideCannons();
