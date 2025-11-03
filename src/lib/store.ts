@@ -18,7 +18,7 @@ type ProjectTasks = {
 type ReorderTasksParams = {
   taskId: string;
   parentId: string;
-  selectedId: string;
+  selectedId: string | null;
 };
 
 export const useProjectTasks = create<ProjectTasks>((set, get) => ({
@@ -140,7 +140,7 @@ export const useProjectTasks = create<ProjectTasks>((set, get) => ({
       .filter((t) => t.parentId === parentId)
       .sort((a, b) => a.order - b.order);
 
-    if (selectedId === parentId) {
+    if (selectedId === parentId || selectedId === null) {
       const minOrder = Math.min(...siblings.map((sibling) => sibling.order), 0);
 
       set(({ tasks }) => ({

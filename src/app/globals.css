@@ -149,6 +149,9 @@ body {
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", system-ui,
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji";
+
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 @layer base {

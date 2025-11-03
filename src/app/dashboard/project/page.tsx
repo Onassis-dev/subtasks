@@ -9,9 +9,15 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, Suspense } from "react";
-import { DndContext, useSensors } from "@dnd-kit/core";
+import {
+  closestCenter,
+  rectIntersection,
+  DndContext,
+  useSensors,
+} from "@dnd-kit/core";
 import { MouseSensor, TouchSensor, useSensor } from "@dnd-kit/core";
 import { useProjectTasks, useSelectedProject } from "@/lib/store";
+import { RootDrop } from "./rootDrop";
 
 function organizeTasksRecursively(
   tasks: Task[],
@@ -82,18 +88,35 @@ function ProjectPageContent() {
       <h1 className="text-2xl font-bold mt-12 mb-8">{project.title}</h1>
 
       <DndContext
+        collisionDetection={customAlgorithm}
         onDragMove={(event) => {
-          setIsOnLeft(
-            !!event.over?.data.current?.parent
-              ? false
-              : (event.active.rect.current?.translated?.left ?? 0) -
-                  (event.over?.rect?.left ?? 0) <
-                  0
-          );
+          const childrens = Number(event.over?.data.current?.childrens) || 0;
+          if (
+            !childrens ||
+            (childrens === 1 &&
+              event.over?.data.current?.firstChild === event.active.id)
+          ) {
+            setIsOnLeft(
+              (event.active.rect.current?.translated?.left ?? 0) -
+                (event.over?.rect?.left ?? 0) <
+                0
+            );
+          } else {
+            setIsOnLeft(false);
+          }
         }}
         onDragEnd={(e) => {
           const { parentId, id: selectedId } = e.over?.data.current as Task;
           const taskId = e.active.id as string;
+
+          if (e.over?.id === "root") {
+            reorderTasks({
+              taskId,
+              parentId: id as string,
+              selectedId: null,
+            });
+            return;
+          }
 
           reorderTasks({
             taskId,
@@ -103,17 +126,16 @@ function ProjectPageContent() {
         }}
         sensors={sensors}
       >
-        {taskTree?.map((task) =>
-          task.done ? null : (
-            <TaskCard
-              isOnLeft={isOnLeft}
-              key={task.id}
-              task={task}
-              setSelectedTask={setSelectedTask}
-              setOpenDelete={setOpenDelete}
-            />
-          )
-        )}
+        <RootDrop />
+        {taskTree?.map((task) => (
+          <TaskCard
+            isOnLeft={isOnLeft}
+            key={task.id}
+            task={task}
+            setSelectedTask={setSelectedTask}
+            setOpenDelete={setOpenDelete}
+          />
+        ))}
       </DndContext>
 
       <CreateTask
@@ -148,4 +170,14 @@ export default function ProjectPage() {
       <ProjectPageContent />
     </Suspense>
   );
+}
+
+function customAlgorithm(args: any) {
+  const pointerCollisions = rectIntersection(args);
+
+  if (pointerCollisions.length > 0) {
+    return pointerCollisions;
+  }
+
+  return closestCenter(args);
 }

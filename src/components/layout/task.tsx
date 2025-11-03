@@ -49,7 +49,8 @@ export function TaskCard({
   } = useDroppable({
     id: task.id,
     data: {
-      parent: !!task.childrens?.length,
+      childrens: task.childrens?.length,
+      firstChild: task.childrens?.[0]?.id ?? null,
       id: task.id,
       parentId: task.parentId,
     },
@@ -84,7 +85,7 @@ export function TaskCard({
                 : undefined,
             }}
             className={
-              "overflow-hidden grid w-full grid-cols-[auto_1fr_auto] gap-2 items-centers border px-2 py-1.5 rounded-lg group/task bg-background relative z-10 " +
+              "overflow-hidden grid w-full grid-cols-[auto_1fr_auto] gap-2 items-centers border px-2 py-1.5 rounded-lg group/task bg-background relative  " +
               (task.pending ? " bg-primary/10" : "")
             }
           >
