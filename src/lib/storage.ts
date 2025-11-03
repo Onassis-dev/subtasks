@@ -7,6 +7,7 @@ export interface Task {
   done: 0 | 1;
   order: number;
   description?: string;
+  pending: 0 | 1;
 }
 
 export interface Project {
@@ -20,5 +21,5 @@ export const db = new Dexie("subtasks-db") as Dexie & {
 
 db.version(1).stores({
   projects: "id,name",
-  tasks: "id,parentId,projectId,title,done,order,description",
+  tasks: "id,parentId,projectId,title,done,order,description,pending",
 });

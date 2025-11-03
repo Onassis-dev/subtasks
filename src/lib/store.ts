@@ -5,17 +5,14 @@ const uuid = () => crypto.randomUUID();
 
 type ProjectTasks = {
   tasks: Task[];
-  changeProject: (projectId: string) => Promise<void>;
-  addTask: (
-    task: Pick<Task, "title" | "parentId" | "description">
-  ) => Promise<string>;
-  updateTask: (
-    task: Pick<Task, "id" | "title" | "description">
-  ) => Promise<string>;
-  completeTask: (taskId: string) => Promise<void>;
-  deleteTask: (taskId: string) => Promise<void>;
-  reorderTasks: (params: ReorderTasksParams) => Promise<void>;
+  changeProject: (projectId: string) => void;
+  addTask: (task: Pick<Task, "title" | "parentId" | "description">) => string;
+  updateTask: (task: Pick<Task, "id" | "title" | "description">) => string;
+  completeTask: (taskId: string) => void;
+  deleteTask: (taskId: string) => void;
+  reorderTasks: (params: ReorderTasksParams) => void;
   checkIfChildrensCompleted: (taskId: string) => boolean;
+  togglePending: (taskId: string) => void;
 };
 
 type ReorderTasksParams = {
@@ -50,19 +47,25 @@ export const useProjectTasks = create<ProjectTasks>((set, get) => ({
     set({ tasks: projectTasks });
   },
 
-  addTask: async (task: Pick<Task, "title" | "parentId" | "description">) => {
+  addTask: (task: Pick<Task, "title" | "parentId" | "description">) => {
     const id = uuid();
     const siblings = get().tasks.filter((t) => t.parentId === task.parentId);
     const maxOrder = Math.max(...siblings.map((sibling) => sibling.order), 0);
 
-    const newTask = { ...task, id, done: 0 as const, order: maxOrder + 1 };
+    const newTask = {
+      ...task,
+      id,
+      done: 0 as const,
+      order: maxOrder + 1,
+      pending: 0 as const,
+    };
 
     set(({ tasks }) => ({ tasks: [...tasks, newTask] }));
     setTimeout(() => db.tasks.add(newTask), 0);
     return id;
   },
 
-  updateTask: async (task: Pick<Task, "id" | "title" | "description">) => {
+  updateTask: (task: Pick<Task, "id" | "title" | "description">) => {
     set(({ tasks }) => ({
       tasks: tasks.map((t) => (t.id === task.id ? { ...t, ...task } : t)),
     }));
@@ -80,7 +83,7 @@ export const useProjectTasks = create<ProjectTasks>((set, get) => ({
     return true;
   },
 
-  completeTask: async (taskId: string) => {
+  completeTask: (taskId: string) => {
     const { tasks } = get();
     const childs = tasks.filter((t) => t.parentId === taskId);
     const task = tasks.find((t) => t.id === taskId);
@@ -98,15 +101,17 @@ export const useProjectTasks = create<ProjectTasks>((set, get) => ({
     }
 
     set(({ tasks }) => ({
-      tasks: tasks.map((t) => (t.id === taskId ? { ...t, done: 1 } : t)),
+      tasks: tasks.map((t) =>
+        t.id === taskId ? { ...t, done: 1, pending: 0 } : t
+      ),
     }));
     setTimeout(
-      () => db.tasks.where("id").equals(taskId).modify({ done: 1 }),
+      () => db.tasks.where("id").equals(taskId).modify({ done: 1, pending: 0 }),
       0
     );
   },
 
-  deleteTask: async (taskId: string) => {
+  deleteTask: (taskId: string) => {
     const { tasks } = get();
     const childrenIds: string[] = [taskId];
 
@@ -127,11 +132,7 @@ export const useProjectTasks = create<ProjectTasks>((set, get) => ({
     setTimeout(() => db.tasks.where("id").anyOf(childrenIds).delete(), 0);
   },
 
-  reorderTasks: async ({
-    taskId,
-    parentId,
-    selectedId,
-  }: ReorderTasksParams) => {
+  reorderTasks: ({ taskId, parentId, selectedId }: ReorderTasksParams) => {
     const { tasks } = get();
     if (parentId === taskId) return;
 
@@ -210,5 +211,26 @@ export const useProjectTasks = create<ProjectTasks>((set, get) => ({
         });
       }, 0);
     }
+  },
+
+  togglePending: (taskId: string) => {
+    const { tasks } = get();
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task) return;
+    if (task.done) return;
+
+    set(({ tasks }) => ({
+      tasks: tasks.map((t) =>
+        t.id === taskId ? { ...t, pending: task.pending === 0 ? 1 : 0 } : t
+      ),
+    }));
+    setTimeout(
+      () =>
+        db.tasks
+          .where("id")
+          .equals(taskId)
+          .modify({ pending: task.pending === 0 ? 1 : 0 }),
+      0
+    );
   },
 }));

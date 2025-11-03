@@ -11,6 +11,7 @@ export async function addProject(project: Pick<Task, "title">) {
     done: 0,
     parentId: "-",
     order: maxOrder + 1,
+    pending: 0,
   });
   return id;
 }

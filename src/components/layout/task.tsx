@@ -5,6 +5,8 @@ import { useProjectTasks } from "@/lib/store";
 import { CreateTask } from "./create-task";
 import {
   CheckIcon,
+  HeartFilledIcon,
+  HeartIcon,
   Pencil1Icon,
   PlusIcon,
   TrashIcon,
@@ -38,6 +40,8 @@ export function TaskCard({
       id: task.id,
     });
 
+  const { togglePending } = useProjectTasks();
+
   const {
     setNodeRef: setDropRef,
     isOver,
@@ -60,10 +64,11 @@ export function TaskCard({
             marginLeft: `${task.level! * 2}rem`,
             opacity: isDragging ? "0.5" : undefined,
             height: isDragging ? 0 : undefined,
+            marginBottom: isDragging ? 0 : "0.75rem",
           }}
           animate={{
             height: done ? 0 : undefined,
-            marginBottom: done ? 0 : "0.75rem",
+            marginBottom: done ? 0 : undefined,
             opacity: done ? 0 : 1,
           }}
           transition={{ duration: 0.3, ease: "easeInOut", delay: 0.2 }}
@@ -77,7 +82,10 @@ export function TaskCard({
                 ? `translate(${transform.x}px, ${transform.y}px)`
                 : undefined,
             }}
-            className="overflow-hidden grid mb-3 w-full grid-cols-[auto_1fr_auto] gap-2 items-centers border px-2 py-1.5 rounded-lg group/task bg-background"
+            className={
+              "overflow-hidden grid mb-3 w-full grid-cols-[auto_1fr_auto] gap-2 items-centers border px-2 py-1.5 rounded-lg group/task bg-background" +
+              (task.pending ? " bg-primary/10" : "")
+            }
           >
             <TaskCheckbox
               task={task}
@@ -96,7 +104,16 @@ export function TaskCard({
             <div className="group-hover/task:opacity-100 opacity-0 my-auto flex items-center gap-1">
               <Button
                 variant="ghost"
-                className="size-5 !p-0 rounded-sm"
+                className="size-5 p-0 rounded-sm"
+                onClick={() => {
+                  togglePending(task.id);
+                }}
+              >
+                {task.pending ? <HeartFilledIcon /> : <HeartIcon />}
+              </Button>
+              <Button
+                variant="ghost"
+                className="size-5 p-0 rounded-sm"
                 onClick={() => {
                   setSelectedTask(task);
                   setOpenDelete(true);
@@ -106,7 +123,7 @@ export function TaskCard({
               </Button>
               <Button
                 variant="ghost"
-                className="size-5 !p-0 rounded-sm"
+                className="size-5 p-0 rounded-sm"
                 onClick={() => {
                   setOpen(true);
                   setEditing(true);
@@ -116,7 +133,7 @@ export function TaskCard({
               </Button>
               <Button
                 variant="ghost"
-                className="size-5 !p-0 rounded-sm"
+                className="size-5 p-0 rounded-sm"
                 onClick={() => setOpen(true)}
               >
                 <PlusIcon />
