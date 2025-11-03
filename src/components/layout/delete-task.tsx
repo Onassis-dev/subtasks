@@ -22,7 +22,7 @@ export function DeleteTaskDialog({ open, onOpenChange, task }: props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete task</DialogTitle>
           <DialogDescription>
@@ -35,7 +35,6 @@ export function DeleteTaskDialog({ open, onOpenChange, task }: props) {
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button
-            variant="destructive"
             onClick={async () => {
               await deleteTask(task.id);
               onOpenChange(false);

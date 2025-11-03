@@ -20,7 +20,7 @@ interface props {
 export function DeleteProjectDialog({ open, onOpenChange, project }: props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete project</DialogTitle>
           <DialogDescription>
@@ -33,7 +33,6 @@ export function DeleteProjectDialog({ open, onOpenChange, project }: props) {
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button
-            variant="destructive"
             onClick={async () => {
               await deleteProject(project.id);
               onOpenChange(false);

@@ -72,6 +72,7 @@ export function TaskCard({
             opacity: done ? 0 : 1,
           }}
           transition={{ duration: 0.3, ease: "easeInOut", delay: 0.2 }}
+          className="relative"
         >
           <div
             ref={setNodeRef}
@@ -83,7 +84,7 @@ export function TaskCard({
                 : undefined,
             }}
             className={
-              "overflow-hidden grid mb-3 w-full grid-cols-[auto_1fr_auto] gap-2 items-centers border px-2 py-1.5 rounded-lg group/task bg-background" +
+              "overflow-hidden grid w-full grid-cols-[auto_1fr_auto] gap-2 items-centers border px-2 py-1.5 rounded-lg group/task bg-background relative z-10 " +
               (task.pending ? " bg-primary/10" : "")
             }
           >
@@ -101,19 +102,10 @@ export function TaskCard({
                 </span>
               )}
             </div>
-            <div className="group-hover/task:opacity-100 opacity-0 my-auto flex items-center gap-1">
+            <div className="group-hover/task:opacity-100 opacity-0 my-auto flex items-center">
               <Button
                 variant="ghost"
-                className="size-5 p-0 rounded-sm"
-                onClick={() => {
-                  togglePending(task.id);
-                }}
-              >
-                {task.pending ? <HeartFilledIcon /> : <HeartIcon />}
-              </Button>
-              <Button
-                variant="ghost"
-                className="size-5 p-0 rounded-sm"
+                className="size-5 !p-0 rounded-sm"
                 onClick={() => {
                   setSelectedTask(task);
                   setOpenDelete(true);
@@ -123,7 +115,7 @@ export function TaskCard({
               </Button>
               <Button
                 variant="ghost"
-                className="size-5 p-0 rounded-sm"
+                className="size-5 !p-0 rounded-sm mr-1"
                 onClick={() => {
                   setOpen(true);
                   setEditing(true);
@@ -133,7 +125,16 @@ export function TaskCard({
               </Button>
               <Button
                 variant="ghost"
-                className="size-5 p-0 rounded-sm"
+                className="size-5 !p-0 rounded-sm"
+                onClick={() => {
+                  togglePending(task.id);
+                }}
+              >
+                {task.pending ? <HeartFilledIcon /> : <HeartIcon />}
+              </Button>
+              <Button
+                variant="ghost"
+                className="size-5 !p-0 rounded-sm"
                 onClick={() => setOpen(true)}
               >
                 <PlusIcon />

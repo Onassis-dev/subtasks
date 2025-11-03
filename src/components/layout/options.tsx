@@ -54,11 +54,27 @@ export const Options = ({ open, onOpenChange }: props) => {
                 <SelectValue placeholder="Select a theme" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="red">Red</SelectItem>
-                <SelectItem value="blue">Blue</SelectItem>
-                <SelectItem value="green">Green</SelectItem>
-                <SelectItem value="purple">Purple</SelectItem>
-                <SelectItem value="primary">Primary</SelectItem>
+                <SelectItem value="red">
+                  {" "}
+                  <div className="w-4 h-4 bg-red-500 rounded-full" /> Red
+                </SelectItem>
+                <SelectItem value="blue">
+                  {" "}
+                  <div className="w-4 h-4 bg-blue-500 rounded-full" /> Blue
+                </SelectItem>
+                <SelectItem value="green">
+                  {" "}
+                  <div className="w-4 h-4 bg-green-500 rounded-full" /> Green
+                </SelectItem>
+                <SelectItem value="purple">
+                  {" "}
+                  <div className="w-4 h-4 bg-purple-500 rounded-full" /> Purple
+                </SelectItem>
+                <SelectItem value="primary">
+                  {" "}
+                  <div className="w-4 h-4 bg-primary-root rounded-full" />{" "}
+                  Primary
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

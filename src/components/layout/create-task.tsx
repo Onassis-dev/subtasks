@@ -104,7 +104,7 @@ export function CreateTask({
           Cancel
         </Button>
         <Button size="sm" disabled={!title.trim()} type="submit">
-          Create
+          Save
         </Button>
       </div>
     </form>
