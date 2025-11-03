@@ -11,7 +11,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { DndContext, useSensors } from "@dnd-kit/core";
 import { MouseSensor, TouchSensor, useSensor } from "@dnd-kit/core";
-import { useProjectTasks } from "@/lib/store";
+import { useProjectTasks, useSelectedProject } from "@/lib/store";
 
 function organizeTasksRecursively(
   tasks: Task[],
@@ -28,11 +28,13 @@ function organizeTasksRecursively(
 }
 
 function ProjectPageContent() {
+  const { setProjectId } = useSelectedProject();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
   const project = useLiveQuery(async () => {
     if (!id) return null;
+    setProjectId(id);
 
     const project = await db.tasks.where("id").equals(id).first();
 

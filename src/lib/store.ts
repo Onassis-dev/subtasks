@@ -234,3 +234,13 @@ export const useProjectTasks = create<ProjectTasks>((set, get) => ({
     );
   },
 }));
+
+type SelectedProject = {
+  projectId: string | null;
+  setProjectId: (project: string | null) => void;
+};
+
+export const useSelectedProject = create<SelectedProject>((set) => ({
+  projectId: null,
+  setProjectId: (projectId: string | null) => set({ projectId }),
+}));

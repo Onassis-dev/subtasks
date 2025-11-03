@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { CheckIcon, GearIcon, PlusIcon } from "@radix-ui/react-icons";
-
 import { Sidebar, SidebarContent, SidebarRail } from "@/components/ui/sidebar";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, Task } from "@/lib/storage";

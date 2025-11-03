@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CircleIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { useSelectedProject } from "@/lib/store";
 
 interface props {
   project: Task;
@@ -24,9 +25,16 @@ export function Project({
   setOpenDelete,
   setOpenEdit,
 }: props) {
+  const { projectId } = useSelectedProject();
+
   return (
     <>
-      <div className="px-2 hover:bg-sidebar-accent flex items-center justify-between rounded-md text-sm h-8 group/project">
+      <div
+        className={
+          "px-2 hover:bg-sidebar-accent flex items-center justify-between rounded-md text-sm h-8 group/project " +
+          (projectId === project.id ? " !bg-primary/15" : "")
+        }
+      >
         <Link
           href={`/dashboard/project?id=${project.id}`}
           className="w-full h-full flex items-center gap-2"
